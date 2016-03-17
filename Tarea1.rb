@@ -32,7 +32,7 @@ post '/validarFirma' do
 	
 	mensaje = params['mensaje']
 	hash = params['hash']
-	if hash == ''
+	if not params['hash'] or not params['mensaje']
 		return status 400
 	end
 	
@@ -55,10 +55,15 @@ get '/status' do
 end
 
 get '/texto' do
-	result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
-	respuesta = Item1.new(result, 'hola')
-	return respuesta
-	#return JSON.pretty_generate(respuesta)
+	begin
+		result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
+		textfix = result.delete!("\n")
+		respuesta = Item1.new(textfix, (Digest::SHA256.hexdigest result).downcase)
+		return respuesta
+		return JSON.pretty_generate(respuesta)
+	rescue
+		return status 500
+	end
 end
 
 
