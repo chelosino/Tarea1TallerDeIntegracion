@@ -42,6 +42,8 @@ get '/texto' do
 	begin
 		result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
 		respuesta = {:text => result, :hash => (Digest::SHA256.hexdigest result).downcase}
+		return "{" + "\n" + " \"text\": " + "\"" + result + "\"" + " \"hash\": " + "\"" + (Digest::SHA256.hexdigest result).downcase + "\"" +  "\n" + "}"
+		return result
 		return respuesta.to_s
 		return JSON.pretty_generate(respuesta)
 	rescue
