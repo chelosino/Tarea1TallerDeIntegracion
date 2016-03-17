@@ -57,7 +57,8 @@ end
 get '/texto' do
 	result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
 	respuesta = Item1.new(result, 'hola')
-	return JSON.pretty_generate(respuesta)
+	#return JSON.pretty_generate(respuesta)
+	return result
 end
 
 
