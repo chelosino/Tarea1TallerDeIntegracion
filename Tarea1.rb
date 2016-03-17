@@ -12,22 +12,6 @@ get '/hello/:name' do
   "Hello #{params['name']}!"
 end
 
-
-class Struct
-  def to_map
-    map = Hash.new
-    self.members.each { |m| map[m] = self[m] }
-    map
-  end
-
-  def to_json(*a)
-    to_map.to_json(*a)
-  end
-end
-
-class Item < Struct.new(:valido, :mensaje); end
-class Item1 < Struct.new(:text, :hash); end
-
 post '/validarFirma' do
 	
 	mensaje = params['mensaje']
@@ -39,10 +23,10 @@ post '/validarFirma' do
 	begin
 		status 200
 		if ((Digest::SHA256.hexdigest mensaje).downcase).eql? hash.downcase
-			respuesta = Item.new(true, mensaje)
+			respuesta = {:valido => true, :mensaje => mensaje}
 			return JSON.pretty_generate(respuesta)
 		else
-			respuesta = Item.new(false, mensaje)
+			respuesta = {:valido => false, :mensaje => mensaje}
 			return JSON.pretty_generate(respuesta)
 		end
 	rescue
@@ -57,8 +41,7 @@ end
 get '/texto' do
 	begin
 		result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
-		textfix = result.delete!("\n")
-		respuesta = Item1.new(textfix, (Digest::SHA256.hexdigest result).downcase)
+		respuesta = {:text => result, :hash => (Digest::SHA256.hexdigest result).downcase}
 		return respuesta
 		return JSON.pretty_generate(respuesta)
 	rescue
