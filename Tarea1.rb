@@ -33,7 +33,7 @@ post '/validarFirma' do
 	mensaje = params['mensaje']
 	hash = params['hash']
 	if hash == ''
-		return status 500
+		return status 400
 	end
 	
 	begin
@@ -46,7 +46,7 @@ post '/validarFirma' do
 			return JSON.pretty_generate(respuesta)
 		end
 	rescue
-		return status 400
+		return status 500
 	end
 end
 
@@ -57,8 +57,8 @@ end
 get '/texto' do
 	result = open('https://s3.amazonaws.com/files.principal/texto.txt').read
 	respuesta = Item1.new(result, 'hola')
+	return respuesta
 	#return JSON.pretty_generate(respuesta)
-	return result
 end
 
 
